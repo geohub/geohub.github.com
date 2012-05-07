@@ -15,12 +15,13 @@ Map.prototype.addMarker = function(title, location, cont) {
             var latlng = results[0].geometry.location;
             var marker = new google.maps.Marker({
                 map: map,
-                position: latlng
+                position: latlng,
+                title: title
             });
 
             cont(marker);
         } else {
-            alert('Geocode failed: ' + status);
+            console.log('Geocode failed: ' + status);
         }
     });
 }

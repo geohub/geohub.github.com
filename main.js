@@ -32,9 +32,18 @@ function github(uri, cont, page) {
     });
 }
 
+var getUserCache = {};
+
 function getUser(user, cont) {
-    var uri = 'https://api.github.com/users/' + user + '?callback=?';
-    github(uri, cont);
+    if(getUserCache[user]) {
+        cont(getUserCache[user]);
+    } else {
+        var uri = 'https://api.github.com/users/' + user + '?callback=?';
+        github(uri, function(data) {
+            getUserCache[user] = data;
+            cont(data);
+        });
+    }
 }
 
 function getUserRepos(user, cont) {
