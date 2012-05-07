@@ -124,7 +124,7 @@ function log(str) {
     $('#log').append(str + '\n');
 }
 
-function main(user) {
+function main(map, user) {
 
     friends = {};
 
@@ -140,6 +140,9 @@ function main(user) {
                                 c.login, c.name, c.location);
                         friendView = new FriendView(friends[c.login]);
                         $('body').append(friendView.element);
+                        map.addMarker(c.login, c.location, function(marker) {
+                            friends[c.login].marker = marker;
+                        });
                     }
 
                     friends[c.login].addRepo(r.owner.login + '/' + r.name);
@@ -156,9 +159,11 @@ function main(user) {
 
 $(document).ready(function() {
 
+    map = new Map('map');
+
     $('#login').submit(function() {
         var user = $('#login-login').val();
-        main(user);
+        main(map, user);
         return false;
     });
 
