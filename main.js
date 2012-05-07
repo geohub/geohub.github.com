@@ -1,6 +1,13 @@
+////////////////////////////////////////////////////////////////////////////////
+// Utility
+
 function progress(str) {
     $('#progress').text(str);
 }
+
+
+////////////////////////////////////////////////////////////////////////////////
+// Github API
 
 function github(uri, cont, page) {
     if(page) uri += '&page=' + page;
@@ -49,6 +56,66 @@ function getRepoContributors(user, repo, cont) {
     });
 }
 
+
+////////////////////////////////////////////////////////////////////////////////
+// Models
+
+function Model() {
+    this.listeners = [];
+}
+
+Model.prototype.addChangeListener = function(listener) {
+    this.listeners.push(listener);
+}
+
+Model.prototype.triggerChange = function() {
+    for(var i in this.listeners) {
+        this.listeners[i].onChange(this);
+    }
+}
+
+
+Friend.prototype = new Model();
+Friend.prototype.constructor = Friend;
+
+function Friend(login, name, location) {
+    Model.call(this);
+    this.login = login;
+    this.name = name;
+    this.location = location;
+    this.repos = [];
+}
+
+Friend.prototype.addRepo = function(repo) {
+    if(this.repos.indexOf(repo) < 0) {
+        this.repos.push(repo);
+        this.triggerChange();
+    }
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+// Views
+
+function FriendView(model) {
+    this.model = model;
+    this.element = $(document.createElement('p'));
+
+    this.model.addChangeListener(this);
+    this.onChange(this.model);
+}
+
+FriendView.prototype.onChange = function() {
+    this.element.text(this.model.name + ' (' + this.model.location + ')' +
+            ' worked with you on ' +
+            this.model.repos.join(', ') +
+            ' (' + this.model.repos.length + ')' + '.');
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+// Main
+
 function debug(str) {
     // $('#log').append(str + '\n');
 }
@@ -57,16 +124,31 @@ function log(str) {
     $('#log').append(str + '\n');
 }
 
-function friends(user) {
+function main(user) {
+
+    friends = {};
+
     progress('Getting repos for ' + user + '...');
     getUserRepos(user, function(r) {
         progress('Getting contributors for ' + user + '/' + r.name);
         getRepoContributors(r.owner.login, r.name, function(c) {
             progress('Getting details for ' + c.login);
             getUser(c.login, function(c) {
+                if(c.login && c.location) {
+                    if(!friends[c.login]) {
+                        friends[c.login] = new Friend(
+                                c.login, c.name, c.location);
+                        friendView = new FriendView(friends[c.login]);
+                        $('body').append(friendView.element);
+                    }
+
+                    friends[c.login].addRepo(r.owner.login + '/' + r.name);
+                }
+                /*
                 if(c.location) {
                     log(c.login + ' (' + c.name + ') @ ' + c.location);
                 }
+                */
             });
         });
     });
@@ -76,7 +158,7 @@ $(document).ready(function() {
 
     $('#login').submit(function() {
         var user = $('#login-login').val();
-        friends(user);
+        main(user);
         return false;
     });
 
