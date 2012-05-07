@@ -69,29 +69,14 @@ function getRepoContributors(user, repo, cont) {
 ////////////////////////////////////////////////////////////////////////////////
 // Models
 
-function Model() {
-    this.listeners = [];
-}
-
-Model.prototype.addChangeListener = function(listener) {
-    this.listeners.push(listener);
-}
-
-Model.prototype.triggerChange = function() {
-    for(var i in this.listeners) {
-        this.listeners[i].onChange(this);
-    }
-}
-
-
 Friend.prototype = new Model();
 Friend.prototype.constructor = Friend;
 
-function Friend(login, name, location) {
+function Friend(login, name, loc) {
     Model.call(this);
     this.login = login;
     this.name = name;
-    this.location = location;
+    this.loc = loc;
     this.repos = [];
 }
 
@@ -115,7 +100,7 @@ function FriendView(model) {
 }
 
 FriendView.prototype.onChange = function() {
-    this.element.text(this.model.name + ' (' + this.model.location + ')' +
+    this.element.text(this.model.name + ' (' + this.model.loc + ')' +
             ' worked with you on ' +
             this.model.repos.join(', ') +
             ' (' + this.model.repos.length + ')' + '.');
@@ -143,7 +128,7 @@ function addRepo(friends, user, repo) {
 
             view = new FriendView(friend);
             $('body').append(view.element);
-            map.addMarker(friend.login, friend.location, function(marker) {
+            map.addMarker(friend.login, friend.loc, function(marker) {
                 // view.marker = marker;
                 google.maps.event.addListener(marker, 'click', function() {
                     alert(user.login);
@@ -170,6 +155,16 @@ function main(map, user) {
             });
         });
     });
+
+    /*
+    progress('Getting contributors for jaspervdj/blaze-html');
+    getRepoContributors('jaspervdj', 'blaze-html', function(c) {
+        progress('Getting details for ' + c.login);
+        getUser(c.login, function(c) {
+            addRepo(friends, c, 'jaspervdj/blaze-html');
+        });
+    });
+    */
 }
 
 $(document).ready(function() {
