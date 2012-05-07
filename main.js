@@ -133,8 +133,31 @@ function log(str) {
     $('#log').append(str + '\n');
 }
 
-function main(map, user) {
+function addRepo(friends, user, repo) {
+    if(user.login && user.location) {
+        var friend;
 
+        if(!friends[user.login]) {
+            friend = new Friend(user.login, user.name, user.location);
+            friends[user.login] = friend;
+
+            view = new FriendView(friend);
+            $('body').append(view.element);
+            map.addMarker(friend.login, friend.location, function(marker) {
+                // view.marker = marker;
+                google.maps.event.addListener(marker, 'click', function() {
+                    alert(user.login);
+                });
+            });
+        } else {
+            friend = friends[user.login];
+        }
+
+        friend.addRepo(repo);
+    }
+}
+
+function main(map, user) {
     friends = {};
 
     progress('Getting repos for ' + user + '...');
@@ -143,24 +166,7 @@ function main(map, user) {
         getRepoContributors(r.owner.login, r.name, function(c) {
             progress('Getting details for ' + c.login);
             getUser(c.login, function(c) {
-                if(c.login && c.location) {
-                    if(!friends[c.login]) {
-                        friends[c.login] = new Friend(
-                                c.login, c.name, c.location);
-                        friendView = new FriendView(friends[c.login]);
-                        $('body').append(friendView.element);
-                        map.addMarker(c.login, c.location, function(marker) {
-                            friends[c.login].marker = marker;
-                        });
-                    }
-
-                    friends[c.login].addRepo(r.owner.login + '/' + r.name);
-                }
-                /*
-                if(c.location) {
-                    log(c.login + ' (' + c.name + ') @ ' + c.location);
-                }
-                */
+                addRepo(friends, c, r.owner.login + '/' + r.name);
             });
         });
     });
