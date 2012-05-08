@@ -88,7 +88,11 @@ SelectionView.prototype.onChange = function() {
         var friends = selection.getFriends();
         for(var i in friends) {
             var friend = friends[i];
-            var p = $(document.createElement('p')).text(friend.name);
+            var p = $(document.createElement('p')).text(friend.name +
+                ' (' + friend.login + ')' +
+                ' is a colaborator for ' +
+                friend.repos.join(', '));
+
             this.element.append(p);
         }
     }

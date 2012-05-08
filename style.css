@@ -12,22 +12,27 @@ body {
 
 div#main {
     width: 100%;
-    background-color: #449;
+    background-color: #256;
 }
 
 div#content {
     width: 800px;
     margin: 0px auto 0px auto;
-    padding: 12px 0px 12px 0px;
+    padding: 24px 0px 24px 0px;
     color: #fff;
+}
+
+div#banner {
+    font-size: 48px;
+    margin: 12px 0px 12px 0px;
 }
 
 div#map {
     height: 480px;
-    width: 640px;
+    margin: 12px 0px 12px 0px;
+    width: 800px;
 }
 
 div#info {
-    float: right;
-    width: 160px;
+    display: none;
 }

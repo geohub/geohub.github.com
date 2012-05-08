@@ -89,10 +89,13 @@ function main(map, user) {
     github.getUserRepos(user, function(r) {
         progress('Getting contributors for ' + user + '/' + r.name);
         github.getRepoContributors(r.owner.login, r.name, function(c) {
-            progress('Getting details for ' + c.login);
-            github.getUser(c.login, function(c) {
-                addRepo(friends, c, r.owner.login + '/' + r.name);
-            });
+            /* Not ourselves. */
+            if(c.login != user) {
+                progress('Getting details for ' + c.login);
+                github.getUser(c.login, function(c) {
+                    addRepo(friends, c, r.owner.login + '/' + r.name);
+                });
+            }
         });
     });
 
@@ -116,6 +119,12 @@ $(document).ready(function() {
     map = new Map('map', selection);
 
     $('#login').submit(function() {
+        /* Fancy animation to show info div and hide banner */
+        if($('#banner').css('display') != 'none') {
+            $('#banner').hide(1000);
+            $('#info').show(1000);
+        }
+
         var user = $('#login-login').val();
         main(map, user);
         return false;
