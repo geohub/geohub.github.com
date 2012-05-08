@@ -128,7 +128,7 @@ function addRepo(friends, user, repo) {
 
             view = new FriendView(friend);
             $('body').append(view.element);
-            map.addMarker(friend.login, friend.loc, function(marker) {
+            map.addFriendMarker(friend, function(marker) {
                 // view.marker = marker;
                 google.maps.event.addListener(marker, 'click', function() {
                     alert(user.login);
@@ -169,7 +169,11 @@ function main(map, user) {
 
 $(document).ready(function() {
 
-    map = new Map('map');
+    selection = new Selection();
+    selectionView = new SelectionView(selection);
+    $('body').append(selectionView.element);
+
+    map = new Map('map', selection);
 
     $('#login').submit(function() {
         var user = $('#login-login').val();
