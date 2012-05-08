@@ -111,7 +111,7 @@ $(document).ready(function() {
 
     selection = new Selection();
     selectionView = new SelectionView(selection);
-    $('body').append(selectionView.element);
+    $('#info').append(selectionView.element);
 
     map = new Map('map', selection);
 

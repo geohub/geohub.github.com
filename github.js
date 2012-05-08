@@ -17,7 +17,7 @@ github.github = function(uri, cont, page) {
         for(var i in meta.Link) {
             var link = meta.Link[i];
             if(link[1].rel == "next") {
-                github(uri, cont, page + 1);
+                github.github(uri, cont, page + 1);
             }
         }
     });

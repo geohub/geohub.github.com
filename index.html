@@ -2,6 +2,7 @@
 <html>
     <head>
         <title>GitHub beer</title>
+        <link rel="stylesheet" type="text/css" href="style.css" />
         <script type="text/JavaScript" src="jquery-1.7.1.min.js"></script>
         <script type="text/javascript"
                 src="https://maps.googleapis.com/maps/api/js?sensor=false">
@@ -12,13 +13,20 @@
         <script type="text/JavaScript" src="main.js"></script>
     </head>
     <body>
-        <div id="progress"></div>
-        <form id="login">
-            <label for="login-login">GitHub login: </label>
-            <input id="login-login" type="text" value="jaspervdj" />
-            <input type="submit" value="OK" />
-        </form>
-        <div id="map" style="height: 480px; width: 640px;"></div>
-        <pre id="log"></pre>
+        <div id="main">
+            <div id="content">
+                <div id="progress"></div>
+                <form id="login">
+                    <label for="login-login">GitHub login: </label>
+                    <input id="login-login" type="text" value="jaspervdj" />
+                    <input type="submit" value="OK" />
+                </form>
+
+                <div id="info"></div>
+                <div id="map"></div>
+
+                <pre id="log"></pre>
+            </div>
+        </div>
     </body>
 </html>

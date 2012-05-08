@@ -1,0 +1,33 @@
+html {
+    font-family: 'Tahoma', 'Arial', 'Helvetica', sans-serif;
+    font-size: 14px;
+    color: #222;
+}
+
+body {
+    background-color: #ccc;
+    margin: 0px;
+    padding: 60px 0px 60px 0px;
+}
+
+div#main {
+    width: 100%;
+    background-color: #449;
+}
+
+div#content {
+    width: 800px;
+    margin: 0px auto 0px auto;
+    padding: 12px 0px 12px 0px;
+    color: #fff;
+}
+
+div#map {
+    height: 480px;
+    width: 640px;
+}
+
+div#info {
+    float: right;
+    width: 160px;
+}
