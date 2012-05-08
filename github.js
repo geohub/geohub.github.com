@@ -1,4 +1,6 @@
-function github(uri, cont, page) {
+var github = {};
+
+github.github = function(uri, cont, page) {
     if(page) uri += '&page=' + page;
     else page = 1;
 
@@ -19,37 +21,37 @@ function github(uri, cont, page) {
             }
         }
     });
-}
+};
 
-var getUserCache = {};
+github.userCache = {};
 
-function getUser(user, cont) {
-    if(getUserCache[user]) {
-        cont(getUserCache[user]);
+github.getUser = function(user, cont) {
+    if(github.userCache[user]) {
+        cont(github.userCache[user]);
     } else {
         var uri = 'https://api.github.com/users/' + user + '?callback=?';
-        github(uri, function(data) {
-            getUserCache[user] = data;
+        github.github(uri, function(data) {
+            github.userCache[user] = data;
             cont(data);
         });
     }
-}
+};
 
-function getUserRepos(user, cont) {
+github.getUserRepos = function(user, cont) {
     var uri = 'https://api.github.com/users/' + user + '/repos?callback=?';
-    github(uri, function(repos) {
+    github.github(uri, function(repos) {
         for(var i in repos) {
             cont(repos[i]);
         }
     });
-}
+};
 
-function getRepoContributors(user, repo, cont) {
+github.getRepoContributors = function(user, repo, cont) {
     var uri = 'https://api.github.com/repos/' + user + '/' + repo +
             '/contributors?callback=?';
-    github(uri, function(contributors) {
+    github.github(uri, function(contributors) {
         for(var i in contributors) {
             cont(contributors[i]);
         }
     });
-}
+};

@@ -86,11 +86,11 @@ function main(map, user) {
     friends = {};
 
     progress('Getting repos for ' + user + '...');
-    getUserRepos(user, function(r) {
+    github.getUserRepos(user, function(r) {
         progress('Getting contributors for ' + user + '/' + r.name);
-        getRepoContributors(r.owner.login, r.name, function(c) {
+        github.getRepoContributors(r.owner.login, r.name, function(c) {
             progress('Getting details for ' + c.login);
-            getUser(c.login, function(c) {
+            github.getUser(c.login, function(c) {
                 addRepo(friends, c, r.owner.login + '/' + r.name);
             });
         });
