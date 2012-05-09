@@ -82,7 +82,8 @@ function SelectionView(selection) {
 SelectionView.prototype.onChange = function() {
     var selection = this.model.selection;
     if(selection == null) {
-        this.element.text('No users selected');
+        this.element.text('Click a user on the map to show more information ' +
+            'about him or her.');
     } else {
         this.element.empty();
         var friends = selection.getFriends();

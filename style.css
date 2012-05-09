@@ -1,7 +1,7 @@
 html {
-    font-family: 'Tahoma', 'Arial', 'Helvetica', sans-serif;
-    font-size: 14px;
     color: #222;
+    font-family: 'Tahoma', 'Arial', 'Helvetica', sans-serif;
+    font-size: 16px;
 }
 
 body {
@@ -10,9 +10,15 @@ body {
     padding: 60px 0px 60px 0px;
 }
 
+div#header {
+    font-size: 32px;
+    padding: 30px 0px 24px 0px;
+    text-align: center;
+}
+
 div#main {
+    background-color: #145;
     width: 100%;
-    background-color: #256;
 }
 
 div#content {
@@ -24,15 +30,38 @@ div#content {
 
 div#banner {
     font-size: 48px;
-    margin: 12px 0px 12px 0px;
+    margin: 12px 0px 24px 0px;
+    text-align: center;
+}
+
+form#login {
+    font-size: 18px;
+    text-align: center;
+}
+
+form#login input {
+    background-color: #367;
+    border: 1px solid #888;
+    color: #fff;
+    font-size: 18px;
+    margin: 0px 6px 0px 6px;
+    padding: 3px 6px 3px 6px;
 }
 
 div#map {
+    border: 2px solid #333;
     height: 480px;
-    margin: 12px 0px 12px 0px;
+    margin: 24px 0px 12px 0px;
     width: 800px;
 }
 
 div#info {
     display: none;
+    margin: 24px 0px 12px 0px;
+}
+
+div#footer {
+    font-size: 14px;
+    padding: 24px 0px 30px 0px;
+    text-align: center;
 }
