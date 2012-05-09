@@ -11,14 +11,17 @@ github.github = function(uri, cont, page) {
 
         debug(meta.status + ' for ' + uri);
 
-        cont(data);
-
-        /* Pagination */
+        /* Check if we have a next page */
+        var haveNextPage = false;
         for(var i in meta.Link) {
             var link = meta.Link[i];
-            if(link[1].rel == "next") {
-                github.github(uri, cont, page + 1);
-            }
+            if(link[1].rel == "next") haveNextPage = true;
+        }
+
+        /* Call callback */
+        cont(data, haveNextPage);
+        if(haveNextPage) {
+            github.github(uri, cont, page + 1);
         }
     });
 };
@@ -37,11 +40,25 @@ github.getUser = function(user, cont) {
     }
 };
 
+/* Get all repositories for a user.
+ *
+ * The repositories which were created by the user (i.e., non-forks) are listed
+ * first.
+ */
 github.getUserRepos = function(user, cont) {
     var uri = 'https://api.github.com/users/' + user + '/repos?callback=?';
-    github.github(uri, function(repos) {
-        for(var i in repos) {
-            cont(repos[i]);
+    var repos = [];
+    github.github(uri, function(rs, haveNextPage) {
+        console.log('Got ' + rs.length + ' new repos');
+        repos = repos.concat(rs);
+        console.log('Now at ' + repos.length + ' repos');
+        if(!haveNextPage) {
+            repos.sort(function(x, y) {return Number(x.fork) - Number(y.fork)});
+            console.log('No next page');
+            for(var i in repos) {
+                console.log(repos[i].name);
+                cont(repos[i]);
+            }
         }
     });
 };
