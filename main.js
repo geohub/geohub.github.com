@@ -23,30 +23,29 @@ function Friend(login, name, loc, url, avatar) {
 }
 
 Friend.prototype.addRepo = function(repo) {
-    if(this.repos.indexOf(repo) < 0) {
-        this.repos.push(repo);
-        this.triggerChange();
+    for(var i in this.repos) {
+        if(repo.equals(this.repos[i])) return;
     }
+
+    this.repos.push(repo);
+};
+
+
+function Repo(owner, name, url) {
+    this.owner = owner;
+    this.name = name;
+    this.url = url;
 }
 
+Repo.prototype.getFullName = function() {
+    if(this.owner) return this.owner + '/' + this.name;
+    else return this.name;
+};
 
-////////////////////////////////////////////////////////////////////////////////
-// Views
-
-function FriendView(model) {
-    this.model = model;
-    this.element = $(document.createElement('p'));
-
-    this.model.addChangeListener(this);
-    this.onChange(this.model);
-}
-
-FriendView.prototype.onChange = function() {
-    this.element.text(this.model.name + ' (' + this.model.loc + ')' +
-            ' worked with you on ' +
-            this.model.repos.join(', ') +
-            ' (' + this.model.repos.length + ')' + '.');
-}
+Repo.prototype.equals = function(repo) {
+    return this.owner == repo.owner &&
+            this.name == repo.name;
+};
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -72,8 +71,6 @@ function addRepo(friends, user, repo) {
                     user.url, avatar);
             friends[user.login] = friend;
 
-            view = new FriendView(friend);
-            $('body').append(view.element);
             map.addFriendMarker(friend, function(marker) {
                 // view.marker = marker;
                 google.maps.event.addListener(marker, 'click', function() {
@@ -93,13 +90,17 @@ function main(map, user) {
 
     progress('Getting repos for ' + user + '...');
     github.getUserRepos(user, function(r) {
+        /* Pass owner as null when it's our own repo */
+        var owner = r.owner.login == user ? null : r.owner.login;
+        repo = new Repo(owner, r.name, r.url);
+
         progress('Getting contributors for ' + user + '/' + r.name);
         github.getRepoContributors(r.owner.login, r.name, function(c) {
             /* Not ourselves. */
             if(c.login != user) {
                 progress('Getting details for ' + c.login);
                 github.getUser(c.login, function(c) {
-                    addRepo(friends, c, r.owner.login + '/' + r.name);
+                    addRepo(friends, c, repo);
                 });
             }
         });

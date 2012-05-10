@@ -97,10 +97,16 @@ SelectionView.prototype.onChange = function() {
                     .attr('src', friend.avatar)
                     .attr('alt', friend.login);
 
-            var p = $(document.createElement('p')).html(friend.name +
+            var p = $(document.createElement('p')).append(friend.name +
                 ' (<a href="' + friend.url + '">@' + friend.login + '</a>)' +
-                ' is a colaborator for ' +
-                friend.repos.join(', '));
+                ' is a colaborator for ');
+
+            for(var j in friend.repos) {
+                var repo = friend.repos[j];
+                p.append('<a href="' + repo.url + '">' +
+                    repo.getFullName() + '</a>');
+                if(j + 1 < friend.repos.length) p.append(', ');
+            }
 
             div.append(avatar);
             div.append(p);
@@ -132,7 +138,7 @@ Map.prototype.addFriendMarker = function(friend, cont) {
     var map = this;
 
     /* Don't DDOS google maps while debugging */
-    if(this.debugMarkers >= this.DEBUG_MAX_MARKERS) {
+    if(this.DEBUG_MAX_MARKERS && this.debugMarkers >= this.DEBUG_MAX_MARKERS) {
         return;
     } else {
         this.debugMarkers++;
