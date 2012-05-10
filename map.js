@@ -130,7 +130,7 @@ function Map(id, selection) {
     this.rateLimited = false;
 
     /* For debugging purposes */
-    this.DEBUG_MAX_MARKERS = 10;
+    /* this.DEBUG_MAX_MARKERS = 10; */
     this.debugMarkers = 0;
 }
 

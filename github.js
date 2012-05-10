@@ -6,7 +6,6 @@ github.github = function(uri, cont, page) {
 
     debug('Call ' + uri);
     $.getJSON(uri, function(response) {
-        console.log(response);
         var meta = response.meta;
         var data = response.data;
 

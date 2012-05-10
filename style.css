@@ -5,19 +5,23 @@ html {
 
 body {
     color: #ccc;
-    background-color: #423628;
+    background-color: #876;
     margin: 0px;
-    padding: 60px 0px 60px 0px;
+    padding: 30px 0px 30px 0px;
 }
 
 div#header {
     font-size: 32px;
     padding: 30px 0px 24px 0px;
     text-align: center;
+    /* background: transparent url('images/shadow-top.png') repeat-x center bottom; */
 }
 
 div#main {
     background-color: #ccc;
+    border-color: #b55;
+    border-style: solid;
+    border-width: 1px 0px 3px 0px;
     color: #933;
     width: 100%;
 }
@@ -50,6 +54,7 @@ form#login input {
     border-color: #b55;
     border-style: solid;
     border-width: 1px 1px 3px 1px;
+    color: #555;
     font-size: 18px;
     margin: 0px 6px 0px 6px;
     padding: 3px 6px 3px 6px;
@@ -85,6 +90,7 @@ div#info img.avatar {
 }
 
 div#footer {
+    /* background: transparent url('images/shadow-bottom.png') repeat-x center top; */
     font-size: 14px;
     padding: 24px 0px 30px 0px;
     text-align: center;
