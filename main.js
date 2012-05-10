@@ -12,11 +12,12 @@ function progress(str) {
 Friend.prototype = new Model();
 Friend.prototype.constructor = Friend;
 
-function Friend(login, name, loc, avatar) {
+function Friend(login, name, loc, url, avatar) {
     Model.call(this);
     this.login = login;
     this.name = name;
     this.loc = loc;
+    this.url = url;
     this.avatar = avatar;
     this.repos = [];
 }
@@ -67,7 +68,8 @@ function addRepo(friends, user, repo) {
             var avatar = 'http://www.gravatar.com/avatar/' +
                     user.gravatar_id + '?s=32';
 
-            friend = new Friend(user.login, user.name, user.location, avatar);
+            friend = new Friend(user.login, user.name, user.location,
+                    user.url, avatar);
             friends[user.login] = friend;
 
             view = new FriendView(friend);

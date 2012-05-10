@@ -60,7 +60,13 @@ div#info {
     margin: 24px 0px 12px 0px;
 }
 
-img.avatar {
+div#info a {
+    color: #fff;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+div#info img.avatar {
     border: 2px solid #333;
     float: left;
     margin: 0px 12px 12px 0px;

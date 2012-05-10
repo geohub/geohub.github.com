@@ -97,8 +97,8 @@ SelectionView.prototype.onChange = function() {
                     .attr('src', friend.avatar)
                     .attr('alt', friend.login);
 
-            var p = $(document.createElement('p')).text(friend.name +
-                ' (' + friend.login + ')' +
+            var p = $(document.createElement('p')).html(friend.name +
+                ' (<a href="' + friend.url + '">@' + friend.login + '</a>)' +
                 ' is a colaborator for ' +
                 friend.repos.join(', '));
 
