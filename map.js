@@ -89,12 +89,22 @@ SelectionView.prototype.onChange = function() {
         var friends = selection.getFriends();
         for(var i in friends) {
             var friend = friends[i];
+
+            var div = $(document.createElement('div'));
+
+            var avatar = $(document.createElement('img'))
+                    .attr('class', 'avatar')
+                    .attr('src', friend.avatar)
+                    .attr('alt', friend.login);
+
             var p = $(document.createElement('p')).text(friend.name +
                 ' (' + friend.login + ')' +
                 ' is a colaborator for ' +
                 friend.repos.join(', '));
 
-            this.element.append(p);
+            div.append(avatar);
+            div.append(p);
+            this.element.append(div);
         }
     }
 }
@@ -109,12 +119,33 @@ function Map(id, selection) {
         center: new google.maps.LatLng(0, 0),
         mapTypeId: google.maps.MapTypeId.ROADMAP
     });
+
+    this.RATE_LIMIT_DELAY = 2000;
+    this.rateLimited = false;
+
+    /* For debugging purposes */
+    this.DEBUG_MAX_MARKERS = 10;
+    this.debugMarkers = 0;
 }
 
 Map.prototype.addFriendMarker = function(friend, cont) {
-    var selection = this.selection;
-    var markerGroups = this.markerGroups;
-    var map = this.map;
+    var map = this;
+
+    /* Don't DDOS google maps while debugging */
+    if(this.debugMarkers >= this.DEBUG_MAX_MARKERS) {
+        return;
+    } else {
+        this.debugMarkers++;
+    }
+
+    /* When we're being rate limited, try again later. */
+    if(this.rateLimited) {
+        console.log('Rate limited: waiting');
+        setTimeout(function() {
+            map.addFriendMarker(friend, cont);
+        }, map.RATE_LIMIT_DELAY);
+        return;
+    }
 
     this.geocoder.geocode({'address': friend.loc}, function(results, status) {
         if(status == google.maps.GeocoderStatus.OK) {
@@ -122,22 +153,29 @@ Map.prototype.addFriendMarker = function(friend, cont) {
 
             /* Find marker group, creat new one if doesn't already exist... */
             var markerGroup = null;
-            for(var i in markerGroups) {
-                var mg = markerGroups[i];
+            for(var i in map.markerGroups) {
+                var mg = map.markerGroups[i];
                 if(mg.latlng.equals(latlng)) {
                     markerGroup = mg;
                 }
             }
             if(markerGroup == null) {
                 markerGroup = new MarkerGroup(latlng);
-                markerGroups.push(markerGroup);
-                var view = new MarkerGroupView(markerGroup, map, selection);
+                map.markerGroups.push(markerGroup);
+                var view = new MarkerGroupView(markerGroup,
+                        map.map, map.selection);
             }
 
             var marker = new Marker(markerGroup, friend);
             markerGroup.addMarker(marker);
-        } else {
-            console.log('Geocode failed: ' + status);
+        } else if(status == google.maps.GeocoderStatus.OVER_QUERY_LIMIT) {
+            /* Set rate limited to true and try again later */
+            console.log('Over api limit, rateLimited = true');
+            map.rateLimited = true;
+            setTimeout(function() {
+                map.rateLimited = false;
+                map.addFriendMarker(friend, cont);
+            }, map.RATE_LIMIT_DELAY);
         }
     });
 };

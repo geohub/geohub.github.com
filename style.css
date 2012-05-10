@@ -60,6 +60,12 @@ div#info {
     margin: 24px 0px 12px 0px;
 }
 
+img.avatar {
+    border: 2px solid #333;
+    float: left;
+    margin: 0px 12px 12px 0px;
+}
+
 div#footer {
     font-size: 14px;
     padding: 24px 0px 30px 0px;
