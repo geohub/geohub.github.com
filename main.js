@@ -105,9 +105,12 @@ function addRepo(friends, user, repo, progress) {
             });
         } else {
             friend = friends[user.login];
+            progress.pop();
         }
 
         friend.addRepo(repo);
+    } else {
+        progress.pop();
     }
 }
 
