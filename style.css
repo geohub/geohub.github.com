@@ -1,11 +1,11 @@
 html {
-    color: #222;
     font-family: 'Tahoma', 'Arial', 'Helvetica', sans-serif;
     font-size: 16px;
 }
 
 body {
-    background-color: #ccc;
+    color: #ccc;
+    background-color: #423628;
     margin: 0px;
     padding: 60px 0px 60px 0px;
 }
@@ -17,7 +17,8 @@ div#header {
 }
 
 div#main {
-    background-color: #145;
+    background-color: #ccc;
+    color: #933;
     width: 100%;
 }
 
@@ -25,12 +26,17 @@ div#content {
     width: 800px;
     margin: 0px auto 0px auto;
     padding: 24px 0px 24px 0px;
-    color: #fff;
 }
 
 div#banner {
     font-size: 48px;
     margin: 12px 0px 24px 0px;
+    text-align: center;
+}
+
+div#progress {
+    font-size: 18px;
+    margin: 12px 0px 12px 0px;
     text-align: center;
 }
 
@@ -40,34 +46,40 @@ form#login {
 }
 
 form#login input {
-    background-color: #367;
-    border: 1px solid #888;
-    color: #fff;
+    background-color: transparent;
+    border-color: #b55;
+    border-style: solid;
+    border-width: 1px 1px 3px 1px;
     font-size: 18px;
     margin: 0px 6px 0px 6px;
     padding: 3px 6px 3px 6px;
 }
 
 div#map {
-    border: 2px solid #333;
+    border-color: #b55;
+    border-style: solid;
+    border-width: 1px 1px 3px 1px;
     height: 480px;
     margin: 24px 0px 12px 0px;
     width: 800px;
 }
 
 div#info {
+    clear: both;
     display: none;
     margin: 24px 0px 12px 0px;
 }
 
 div#info a {
-    color: #fff;
+    color: #933;
     font-weight: bold;
     text-decoration: none;
 }
 
 div#info img.avatar {
-    border: 2px solid #333;
+    border-color: #b55;
+    border-style: solid;
+    border-width: 1px 1px 3px 1px;
     float: left;
     margin: 0px 12px 12px 0px;
 }

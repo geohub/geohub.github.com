@@ -1,13 +1,42 @@
-////////////////////////////////////////////////////////////////////////////////
-// Utility
+Progress.prototype = new Model();
+Progress.prototype.constructor = Progress;
 
-function progress(str) {
-    $('#progress').text(str);
+function Progress() {
+    Model.call(this);
+    this.done = 0;
+    this.queued = 0;
+}
+
+Progress.prototype.push = function() {
+    this.queued++;
+    this.triggerChange();
+}
+
+Progress.prototype.pop = function() {
+    this.queued--;
+    this.done++;
+    this.triggerChange();
+}
+
+Progress.prototype.isStarted = function() {
+    return this.queued > 0;
 }
 
 
-////////////////////////////////////////////////////////////////////////////////
-// Models
+ProgressView = function(model) {
+    this.model = model;
+    this.element = $(document.createElement('div')).text('Hang on...');
+
+    this.model.addChangeListener(this);
+    this.onChange();
+}
+
+ProgressView.prototype.onChange = function() {
+    this.element.text('Getting neighbour information: ' +
+            this.model.done + ' done, ' +
+            this.model.queued + ' queued');
+}
+
 
 Friend.prototype = new Model();
 Friend.prototype.constructor = Friend;
@@ -59,7 +88,7 @@ function log(str) {
     $('#log').append(str + '\n');
 }
 
-function addRepo(friends, user, repo) {
+function addRepo(friends, user, repo, progress) {
     if(user.login && user.location) {
         var friend;
 
@@ -72,10 +101,7 @@ function addRepo(friends, user, repo) {
             friends[user.login] = friend;
 
             map.addFriendMarker(friend, function(marker) {
-                // view.marker = marker;
-                google.maps.event.addListener(marker, 'click', function() {
-                    alert(user.login);
-                });
+                progress.pop();
             });
         } else {
             friend = friends[user.login];
@@ -86,21 +112,23 @@ function addRepo(friends, user, repo) {
 }
 
 function main(map, user) {
-    friends = {};
+    var friends = {};
+    var progress = new Progress();
+    var progressView = new ProgressView(progress);
+    $('#progress').empty();
+    $('#progress').append(progressView.element);
 
-    progress('Getting repos for ' + user + '...');
     github.getUserRepos(user, function(r) {
         /* Pass owner as null when it's our own repo */
         var owner = r.owner.login == user ? null : r.owner.login;
         repo = new Repo(owner, r.name, r.url);
 
-        progress('Getting contributors for ' + user + '/' + r.name);
         github.getRepoContributors(r.owner.login, r.name, function(c) {
             /* Not ourselves. */
             if(c.login != user) {
-                progress('Getting details for ' + c.login);
+                progress.push();
                 github.getUser(c.login, function(c) {
-                    addRepo(friends, c, repo);
+                    addRepo(friends, c, repo, progress);
                 });
             }
         });
@@ -128,8 +156,8 @@ $(document).ready(function() {
     $('#login').submit(function() {
         /* Fancy animation to show info div and hide banner */
         if($('#banner').css('display') != 'none') {
-            $('#banner').hide(1000);
-            $('#info').show(1000);
+            $('#banner').slideUp(1000);
+            $('#info').slideDown(1000);
         }
 
         var user = $('#login-login').val();

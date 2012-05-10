@@ -174,6 +174,7 @@ Map.prototype.addFriendMarker = function(friend, cont) {
 
             var marker = new Marker(markerGroup, friend);
             markerGroup.addMarker(marker);
+            cont(marker);
         } else if(status == google.maps.GeocoderStatus.OVER_QUERY_LIMIT) {
             /* Set rate limited to true and try again later */
             console.log('Over api limit, rateLimited = true');
