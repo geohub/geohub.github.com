@@ -4,8 +4,8 @@ html {
 }
 
 body {
-    color: #ccc;
-    background-color: #876;
+    color: #eee;
+    background-color: #333;
     margin: 0px;
     padding: 30px 0px 30px 0px;
 }
@@ -14,22 +14,17 @@ div#header {
     font-size: 32px;
     padding: 30px 0px 24px 0px;
     text-align: center;
-    /* background: transparent url('images/shadow-top.png') repeat-x center bottom; */
 }
 
 div#main {
-    background-color: #ccc;
-    border-color: #b55;
-    border-style: solid;
-    border-width: 1px 0px 3px 0px;
-    color: #933;
+    background-color: #555;
+    margin: 0px auto 0px auto;
+    padding: 24px 24px 12px 24px;
     width: 100%;
+    width: 800px;
 }
 
 div#content {
-    width: 800px;
-    margin: 0px auto 0px auto;
-    padding: 24px 0px 24px 0px;
 }
 
 div#banner {
@@ -50,20 +45,20 @@ form#login {
 }
 
 form#login input {
-    background-color: transparent;
-    border-color: #b55;
-    border-style: solid;
-    border-width: 1px 1px 3px 1px;
-    color: #555;
+    background-color: #444;
+    border: solid 1px #777;
+    color: #eee;
     font-size: 18px;
     margin: 0px 6px 0px 6px;
     padding: 3px 6px 3px 6px;
 }
 
+form#login input#login-submit {
+    color: #a6ec9b;
+}
+
 div#map {
-    border-color: #b55;
-    border-style: solid;
-    border-width: 1px 1px 3px 1px;
+    border: 1px solid #333;
     height: 480px;
     margin: 24px 0px 12px 0px;
     width: 800px;
@@ -72,25 +67,32 @@ div#map {
 div#info {
     clear: both;
     display: none;
-    margin: 24px 0px 12px 0px;
+    margin: 0px 0px 12px 0px;
+}
+
+div#info p {
+    margin: 0px;
+    padding: 0px;
 }
 
 div#info a {
-    color: #933;
+    color: #a6ec9b;
     font-weight: bold;
     text-decoration: none;
 }
 
+div.clear {
+    clear: both;
+}
+
 div#info img.avatar {
-    border-color: #b55;
-    border-style: solid;
-    border-width: 1px 1px 3px 1px;
+    border: 1px solid #333;
     float: left;
     margin: 0px 12px 12px 0px;
 }
 
 div#footer {
-    /* background: transparent url('images/shadow-bottom.png') repeat-x center top; */
+    color: #888;
     font-size: 14px;
     padding: 24px 0px 30px 0px;
     text-align: center;

@@ -121,6 +121,7 @@ SelectionView.prototype.onChange = function() {
 
             div.append(avatar);
             div.append(p);
+            div.append($(document.createElement('div')).attr('class', 'clear'));
             this.element.append(div);
         }
     }
