@@ -32,10 +32,15 @@ MarkerGroup.prototype.addMarker = function(marker) {
 function MarkerGroupView(markerGroup, selection, map) {
     this.markerGroup = markerGroup;
     this.selection = selection;
+
+    this.SELECTED = 'images/selected.png';
+    this.UNSELECTED = 'images/octocat.png';
+
     this.marker = new google.maps.Marker({
         map: map,
         position: markerGroup.latlng,
-        title: 'undefined'
+        title: 'undefined',
+        icon: this.UNSELECTED
     });
 
     google.maps.event.addListener(this.marker, 'click', function() {
@@ -59,9 +64,9 @@ MarkerGroupView.prototype.onChange = function() {
     this.marker.setTitle(this.getTitle());
 
     if(this.selection.selection == this.markerGroup) {
-        this.marker.setIcon('images/selected.png');
+        this.marker.setIcon(this.SELECTED);
     } else {
-        this.marker.setIcon(null);
+        this.marker.setIcon(this.UNSELECTED);
     }
 };
 
