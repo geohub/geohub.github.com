@@ -88,7 +88,7 @@ function log(str) {
     $('#log').append(str + '\n');
 }
 
-function addRepo(friends, user, repo, progress) {
+function addRepo(map, friends, user, repo, progress) {
     console.log('Adding ' + user.login + ' for repo ' + repo.name);
 
     if(user.login && user.location) {
@@ -116,26 +116,34 @@ function addRepo(friends, user, repo, progress) {
     }
 }
 
-function main(map, user) {
+function main(user) {
+    var selection = new Selection();
+    var selectionView = new SelectionView(selection);
+    $('#info').empty().append(selectionView.element);
+
+    var map = new Map('map', selection);
+
     var friends = {};
     var progress = new Progress();
     var progressView = new ProgressView(progress);
-    $('#progress').empty();
-    $('#progress').append(progressView.element);
+    $('#progress').empty().append(progressView.element);
 
-    github.getUserRepos(user, function(r) {
-        /* Pass owner as null when it's our own repo */
-        var owner = r.owner.login == user ? null : r.owner.login;
-        var repo = new Repo(owner, r.name, r.url);
+    /* First get some info on the current user */
+    github.getUser(user, function(userInfo) {
+        github.getUserRepos(user, function(r) {
+            /* Pass owner as null when it's our own repo */
+            var owner = r.owner.login == userInfo.login ? null : r.owner.login;
+            var repo = new Repo(owner, r.name, r.url);
 
-        github.getRepoContributors(r.owner.login, r.name, function(c) {
-            /* Not ourselves. */
-            if(c.login != user) {
-                progress.push();
-                github.getUser(c.login, function(c) {
-                    addRepo(friends, c, repo, progress);
-                });
-            }
+            github.getRepoContributors(r.owner.login, r.name, function(c) {
+                /* Not ourselves. */
+                if(c.login != userInfo.login) {
+                    progress.push();
+                    github.getUser(c.login, function(c) {
+                        addRepo(map, friends, c, repo, progress);
+                    });
+                }
+            });
         });
     });
 
@@ -152,21 +160,16 @@ function main(map, user) {
 
 $(document).ready(function() {
 
-    var selection = new Selection();
-    var selectionView = new SelectionView(selection);
-    $('#info').append(selectionView.element);
-
-    map = new Map('map', selection);
-
     $('#login').submit(function() {
         /* Fancy animation to show info div and hide banner */
         if($('#banner').css('display') != 'none') {
             $('#banner').slideUp(1000);
             $('#info').slideDown(1000);
+            $('#map').show();
         }
 
         var user = $('#login-login').val();
-        main(map, user);
+        main(user);
         return false;
     });
 

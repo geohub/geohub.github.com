@@ -59,6 +59,7 @@ form#login input#login-submit {
 
 div#map {
     border: 1px solid #333;
+    display: none;
     height: 480px;
     margin: 24px 0px 12px 0px;
     width: 800px;
