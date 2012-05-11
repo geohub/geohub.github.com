@@ -117,7 +117,7 @@ SelectionView.prototype.onChange = function() {
                 ' (<a href="' + friend.url + '">@' + friend.login + '</a>)' +
                 ' — connected through ');
 
-            for(var j in friend.repos) {
+            for(var j = 0; j < friend.repos.length; j++) {
                 var repo = friend.repos[j];
                 p.append('<a href="' + repo.url + '">' +
                     repo.getFullName() + '</a>');
