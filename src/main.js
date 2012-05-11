@@ -99,7 +99,7 @@ function addRepo(map, friends, user, repo, progress) {
                     user.gravatar_id + '?s=32';
 
             friend = new Friend(user.login, user.name, user.location,
-                    user.url, avatar);
+                    user.html_url, avatar);
             friends[user.login] = friend;
 
             map.addFriendMarker(friend, function(marker) {
