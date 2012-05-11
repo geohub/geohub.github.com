@@ -32,7 +32,7 @@ ProgressView = function(model) {
 }
 
 ProgressView.prototype.onChange = function() {
-    this.element.text('Getting neighbour information: ' +
+    this.element.text('Geocoding users: ' +
             this.model.done + ' done, ' +
             this.model.queued + ' queued');
 }
