@@ -76,16 +76,6 @@ div#info p {
     padding: 0px;
 }
 
-div#info a {
-    color: #a6ec9b;
-    font-weight: bold;
-    text-decoration: none;
-}
-
-div.clear {
-    clear: both;
-}
-
 div#info img.avatar {
     border: 1px solid #333;
     float: left;
@@ -97,4 +87,18 @@ div#footer {
     font-size: 14px;
     padding: 24px 0px 30px 0px;
     text-align: center;
+}
+
+div#footer a {
+    font-weight: normal;
+}
+
+a {
+    color: #a6ec9b;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+div.clear {
+    clear: both;
 }
