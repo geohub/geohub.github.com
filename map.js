@@ -29,8 +29,9 @@ MarkerGroup.prototype.addMarker = function(marker) {
 };
 
 
-function MarkerGroupView(markerGroup, map, selection) {
-    this.model = markerGroup;
+function MarkerGroupView(markerGroup, selection, map) {
+    this.markerGroup = markerGroup;
+    this.selection = selection;
     this.marker = new google.maps.Marker({
         map: map,
         position: markerGroup.latlng,
@@ -42,16 +43,26 @@ function MarkerGroupView(markerGroup, map, selection) {
     });
 
     markerGroup.addChangeListener(this);
+    selection.addChangeListener(this);
     this.onChange(markerGroup);
 }
 
-MarkerGroupView.prototype.onChange = function() {
-    var titles = [];
-    for(var i in this.model.markers) {
-        titles.push(this.model.markers[i].friend.login);
+MarkerGroupView.prototype.getTitle = function() {
+    var names = [];
+    for(var i in this.markerGroup.markers) {
+        names.push(this.markerGroup.markers[i].friend.login);
     }
+    return names.join(', ');
+}
 
-    this.marker.setTitle(titles.join(', '));
+MarkerGroupView.prototype.onChange = function() {
+    this.marker.setTitle(this.getTitle());
+
+    if(this.selection.selection == this.markerGroup) {
+        this.marker.setIcon('images/selected.png');
+    } else {
+        this.marker.setIcon(null);
+    }
 };
 
 
@@ -99,7 +110,7 @@ SelectionView.prototype.onChange = function() {
 
             var p = $(document.createElement('p')).append(friend.name +
                 ' (<a href="' + friend.url + '">@' + friend.login + '</a>)' +
-                ' is a colaborator for ');
+                ' — connected through ');
 
             for(var j in friend.repos) {
                 var repo = friend.repos[j];
@@ -169,7 +180,7 @@ Map.prototype.addFriendMarker = function(friend, cont) {
                 markerGroup = new MarkerGroup(latlng);
                 map.markerGroups.push(markerGroup);
                 var view = new MarkerGroupView(markerGroup,
-                        map.map, map.selection);
+                        map.selection, map.map);
             }
 
             var marker = new Marker(markerGroup, friend);

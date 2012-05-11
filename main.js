@@ -150,8 +150,8 @@ function main(map, user) {
 
 $(document).ready(function() {
 
-    selection = new Selection();
-    selectionView = new SelectionView(selection);
+    var selection = new Selection();
+    var selectionView = new SelectionView(selection);
     $('#info').append(selectionView.element);
 
     map = new Map('map', selection);
