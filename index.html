@@ -14,29 +14,31 @@
         <script type="text/JavaScript" src="src/main.js"></script>
     </head>
     <body>
-        <div id="header">locate your github neighbours</div>
         <div id="main">
-            <div id="content">
-
-                <div id="banner">Huge banner here</div>
-
-                <form id="login">
-                    <label for="login-login">Your github username: </label>
-                    <input id="login-login" type="text" value="jaspervdj" />
-                    <input id="login-submit" type="submit" value="OK" />
-                </form>
-
-                <div id="progress"></div>
-                <div id="map"></div>
-                <div id="info"></div>
+            <div id="banner">
+                <img src="images/banner.png" alt="banner" />
+                <br />
+                Travelling to another city? Use
+                <a href="http://geohub.github.com">geohub.github.com
+                </a> to locate
+                coders you might know, and meet awesome people.
             </div>
+
+            <form id="login">
+                <label for="login-login">Your github username: </label>
+                <input id="login-login" type="text" value="" />
+                <input id="login-submit" type="submit" value="OK" />
+            </form>
+
+            <div id="progress"></div>
+            <div id="map"></div>
+            <div id="info"></div>
         </div>
         <div id="footer">
             By <a href="http://twitter.com/jaspervdj">@jaspervdj</a>,
-            source code available
             <a href="https://github.com/geohub/geohub.github.com">
-            on github</a>.
-            </div>
+            fork me on github</a>.
+        </div>
         <pre id="log"></pre>
     </body>
 </html>

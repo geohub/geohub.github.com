@@ -7,13 +7,7 @@ body {
     color: #eee;
     background-color: #333;
     margin: 0px;
-    padding: 30px 0px 30px 0px;
-}
-
-div#header {
-    font-size: 32px;
-    padding: 30px 0px 24px 0px;
-    text-align: center;
+    padding: 60px 0px 30px 0px;
 }
 
 div#main {
@@ -24,11 +18,8 @@ div#main {
     width: 800px;
 }
 
-div#content {
-}
-
 div#banner {
-    font-size: 48px;
+    font-size: 24px;
     margin: 12px 0px 24px 0px;
     text-align: center;
 }
