@@ -89,6 +89,8 @@ function log(str) {
 }
 
 function addRepo(friends, user, repo, progress) {
+    console.log('Adding ' + user.login + ' for repo ' + repo.name);
+
     if(user.login && user.location) {
         var friend;
 
@@ -124,7 +126,7 @@ function main(map, user) {
     github.getUserRepos(user, function(r) {
         /* Pass owner as null when it's our own repo */
         var owner = r.owner.login == user ? null : r.owner.login;
-        repo = new Repo(owner, r.name, r.url);
+        var repo = new Repo(owner, r.name, r.url);
 
         github.getRepoContributors(r.owner.login, r.name, function(c) {
             /* Not ourselves. */
