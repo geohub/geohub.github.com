@@ -186,6 +186,7 @@ function main(user) {
 
     /* First get some info on the current user */
     github.getUser(user, function(userInfo) {
+        if(!userInfo.login) alert('User ' + user + ' not found!');
         github.getUserRepos(user, function(r) {
             /* Pass owner as null when it's our own repo */
             var owner = r.owner.login == userInfo.login ? null : r.owner.login;
