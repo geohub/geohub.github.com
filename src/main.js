@@ -1,3 +1,4 @@
+////////////////////////////////////////////////////////////////////////////////
 Progress.prototype = new Model();
 Progress.prototype.constructor = Progress;
 
@@ -23,6 +24,7 @@ Progress.prototype.isStarted = function() {
 }
 
 
+////////////////////////////////////////////////////////////////////////////////
 ProgressView = function(model) {
     this.model = model;
     this.element = $(document.createElement('div')).text('Hang on...');
@@ -38,6 +40,7 @@ ProgressView.prototype.onChange = function() {
 }
 
 
+////////////////////////////////////////////////////////////////////////////////
 Friend.prototype = new Model();
 Friend.prototype.constructor = Friend;
 
@@ -59,11 +62,18 @@ Friend.prototype.addRepo = function(repo) {
     this.repos.push(repo);
 };
 
+Friend.prototype.getRepos = function(repoFilter) {
+    if(repoFilter) return repoFilter.filter(this.repos);
+    else return this.repos;
+};
 
-function Repo(owner, name, url) {
+
+////////////////////////////////////////////////////////////////////////////////
+function Repo(owner, name, url, fork) {
     this.owner = owner;
     this.name = name;
     this.url = url;
+    this.fork = fork;
 }
 
 Repo.prototype.getFullName = function() {
@@ -78,8 +88,43 @@ Repo.prototype.equals = function(repo) {
 
 
 ////////////////////////////////////////////////////////////////////////////////
-// Main
+RepoFilter.prototype = new Model();
+RepoFilter.prototype.constructor = RepoFilter;
 
+function RepoFilter() {
+    Model.call(this);
+
+    this.forks = true;
+    this.nonForks = true;
+}
+
+RepoFilter.prototype.setForks = function(forks) {
+    if(this.forks != forks) {
+        this.forks = forks;
+        this.triggerChange();
+    }
+};
+
+RepoFilter.prototype.setNonForks = function(nonForks) {
+    if(this.nonForks != nonForks) {
+        this.nonForks = nonForks;
+        this.triggerChange();
+    }
+};
+
+RepoFilter.prototype.filter = function(repos) {
+    var rs = [];
+    for(var i in repos) {
+        var repo = repos[i];
+        if(repo.fork && this.forks) rs.push(repo);
+        if(!repo.fork && this.nonForks) rs.push(repo);
+    }
+
+    return rs;
+};
+
+
+////////////////////////////////////////////////////////////////////////////////
 function debug(str) {
     // $('#log').append(str + '\n');
 }
@@ -118,10 +163,21 @@ function addRepo(map, friends, user, repo, progress) {
 
 function main(user) {
     var selection = new Selection();
+
+    var repoFilter = new RepoFilter();
+
+    /* Register callbacks for the filter... */
+    $('#filters-forks').click(function() {
+        repoFilter.setForks($(this).is(':checked'));
+    });
+    $('#filters-non-forks').click(function() {
+        repoFilter.setNonForks($(this).is(':checked'));
+    });
+
     var selectionView = new SelectionView(selection);
     $('#info').empty().append(selectionView.element);
 
-    var map = new Map('map', selection);
+    var map = new Map('map', selection, repoFilter);
 
     var friends = {};
     var progress = new Progress();
@@ -133,7 +189,7 @@ function main(user) {
         github.getUserRepos(user, function(r) {
             /* Pass owner as null when it's our own repo */
             var owner = r.owner.login == userInfo.login ? null : r.owner.login;
-            var repo = new Repo(owner, r.name, r.url);
+            var repo = new Repo(owner, r.name, r.url, r.fork);
 
             github.getRepoContributors(r.owner.login, r.name, function(c) {
                 /* Not ourselves. */
@@ -164,6 +220,7 @@ $(document).ready(function() {
         /* Fancy animation to show info div and hide banner */
         if($('#banner').css('display') != 'none') {
             $('#banner').slideUp(1000);
+            $('#filters').slideDown(1000);
             $('#info').slideDown(1000);
             $('#map').show();
         }

@@ -1,3 +1,4 @@
+////////////////////////////////////////////////////////////////////////////////
 Marker.prototype = new Model();
 Marker.prototype.constructor = Marker;
 
@@ -8,27 +9,40 @@ function Marker(group, friend) {
 }
 
 
+////////////////////////////////////////////////////////////////////////////////
 MarkerGroup.prototype = new Model();
 MarkerGroup.prototype.constructor = MarkerGroup;
 
-function MarkerGroup(latlng) {
+function MarkerGroup(latlng, repoFilter) {
     Model.call(this);
     this.latlng = latlng;
+    this.repoFilter = repoFilter;
     this.markers = [];
+
+    repoFilter.addChangeListener(this);
 }
 
 MarkerGroup.prototype.getFriends = function() {
     var friends = [];
-    for(var i in this.markers) friends.push(this.markers[i].friend);
+    for(var i in this.markers) {
+        var friend = this.markers[i].friend;
+        if(friend.getRepos(this.repoFilter).length > 0) friends.push(friend);
+    }
+
     return friends;
-}
+};
 
 MarkerGroup.prototype.addMarker = function(marker) {
     this.markers.push(marker);
     this.triggerChange();
 };
 
+MarkerGroup.prototype.onChange = function() {
+    this.triggerChange();
+};
 
+
+////////////////////////////////////////////////////////////////////////////////
 function MarkerGroupView(markerGroup, selection, map) {
     this.markerGroup = markerGroup;
     this.selection = selection;
@@ -52,16 +66,13 @@ function MarkerGroupView(markerGroup, selection, map) {
     this.onChange(markerGroup);
 }
 
-MarkerGroupView.prototype.getTitle = function() {
+MarkerGroupView.prototype.onChange = function(source) {
+    var friends = this.markerGroup.getFriends();
     var names = [];
-    for(var i in this.markerGroup.markers) {
-        names.push(this.markerGroup.markers[i].friend.login);
-    }
-    return names.join(', ');
-}
+    for(var i in friends) names.push(friends[i].login);
 
-MarkerGroupView.prototype.onChange = function() {
-    this.marker.setTitle(this.getTitle());
+    this.marker.setTitle(names.join(', '));
+    this.marker.setVisible(friends.length > 0);
 
     if(this.selection.selection == this.markerGroup) {
         this.marker.setIcon(this.SELECTED);
@@ -71,6 +82,7 @@ MarkerGroupView.prototype.onChange = function() {
 };
 
 
+////////////////////////////////////////////////////////////////////////////////
 Selection.prototype = new Model();
 Selection.prototype.constructor = Selection;
 
@@ -87,6 +99,7 @@ Selection.prototype.setSelection = function(selection) {
 };
 
 
+////////////////////////////////////////////////////////////////////////////////
 function SelectionView(selection) {
     this.model = selection;
     this.element = $(document.createElement('div'));
@@ -117,11 +130,12 @@ SelectionView.prototype.onChange = function() {
                 ' (<a href="' + friend.url + '">@' + friend.login + '</a>)' +
                 ' — connected through ');
 
-            for(var j = 0; j < friend.repos.length; j++) {
-                var repo = friend.repos[j];
+            var repos = friend.getRepos(this.model.selection.repoFilter);
+            for(var j = 0; j < repos.length; j++) {
+                var repo = repos[j];
                 p.append('<a href="' + repo.url + '">' +
                     repo.getFullName() + '</a>');
-                if(j + 1 < friend.repos.length) p.append(', ');
+                if(j + 1 < repos.length) p.append(', ');
             }
 
             div.append(avatar);
@@ -133,8 +147,10 @@ SelectionView.prototype.onChange = function() {
 }
 
 
-function Map(id, selection) {
+////////////////////////////////////////////////////////////////////////////////
+function Map(id, selection, repoFilter) {
     this.selection = selection;
+    this.repoFilter = repoFilter;
     this.markerGroups = [];
     this.geocoder = new google.maps.Geocoder();
     this.map = new google.maps.Map(document.getElementById(id), {
@@ -183,7 +199,7 @@ Map.prototype.addFriendMarker = function(friend, cont) {
                 }
             }
             if(markerGroup == null) {
-                markerGroup = new MarkerGroup(latlng);
+                markerGroup = new MarkerGroup(latlng, map.repoFilter);
                 map.markerGroups.push(markerGroup);
                 var view = new MarkerGroupView(markerGroup,
                         map.selection, map.map);
